@@ -29,31 +29,38 @@ show_usage() {
     log "Supported file browsers: caja dolphin nautilus nemo"
 }
 
-if [[ "$1" != "" ]]; then
-    distro="$1"
-else
-    if [[ ! -f /etc/os-release ]]; then
-        error "could not detect distribution automatically"
+case "$1" in
+    -h|--help)
         show_usage
-        exit 2
-    fi
-
-    source /etc/os-release
-
-    case "$ID" in
-        ubuntu|debian|fedora|centos)
-            distro="$ID"
-            ;;
-        opensuse*)
-            distro=opensuse
-            ;;
-        *)
-            error "failed to detect distribution from /etc/os-release"
+        exit 0
+        ;;
+    "")
+        if [[ ! -f /etc/os-release ]]; then
+            error "could not detect distribution automatically"
             show_usage
-            exit 3
-            ;;
-    esac
-fi
+            exit 2
+        fi
+
+        source /etc/os-release
+
+        case "$ID" in
+            ubuntu|debian|fedora|centos)
+                distro="$ID"
+                ;;
+            opensuse*)
+                distro=opensuse
+                ;;
+            *)
+                error "failed to detect distribution from /etc/os-release"
+                show_usage
+                exit 3
+                ;;
+        esac
+        ;;
+    *)
+        distro="$1"
+        ;;
+esac
 
 # if a first parameter was provided, we need to skip it in our loop below (in case we should not auto detect)
 [[ "$1" != "" ]] && shift
