@@ -24,6 +24,9 @@ show_usage() {
     log "  distro:        Distribution to install packages for"
     log "  file browser:  File browser to install extension for"
     log "                 (can be specified more than once)"
+    log
+    log "Supported distributions: ubuntu debian fedora centos opensuse"
+    log "Supported file browsers: caja dolphin nautilus nemo"
 }
 
 if [[ "$1" != "" ]]; then
