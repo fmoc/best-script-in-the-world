@@ -18,9 +18,14 @@ error() {
 }
 
 show_usage() {
-    log "Usage: bash $0 [distro] [file browser...]"
+    log "Usage: bash $0 [--auto] [distro] [file browser...]"
     log
-    log "Optional parameters:"
+    log "Options:"
+    log
+    log "  --auto:        Automatically install extensions suitable for this distribution and the installed file browsers"
+    log "  -h/--help:     Display this help text"
+    log
+    log "Positional parameters:"
     log "  distro:        Distribution to install packages for"
     log "  file browser:  File browser to install extension for"
     log "                 (can be specified more than once)"
@@ -30,15 +35,21 @@ show_usage() {
 }
 
 case "$1" in
-    -h|--help)
+    ""|-h|--help)
         show_usage
         exit 0
         ;;
-    "")
+    "--auto")
+        if [[ "$2" != "" ]]; then
+            error "--auto does not support additional parameters"
+            show_usage
+            exit 2
+        fi
+
         if [[ ! -f /etc/os-release ]]; then
             error "could not detect distribution automatically"
             show_usage
-            exit 2
+            exit 3
         fi
 
         source /etc/os-release
@@ -53,7 +64,7 @@ case "$1" in
             *)
                 error "failed to detect distribution from /etc/os-release"
                 show_usage
-                exit 3
+                exit 4
                 ;;
         esac
         ;;
@@ -80,7 +91,7 @@ fi
 if [[ ${#file_browsers[@]} -eq 0 ]]; then
     error "could not detect any supported file browsers"
     show_usage
-    exit 4
+    exit 5
 fi
 
 case "$distro" in
@@ -118,7 +129,7 @@ case "$distro" in
         ;;
     *)
         error "unsupported distro: $distro"
-        exit 5
+        exit 6
         ;;
 esac
 
