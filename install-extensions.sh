@@ -3,10 +3,10 @@
 set -eo pipefail
 
 _log_message() {
-    [[ -t 0 ]] && echo -ne "\e[1m\e[3${1}m"
+    [[ -t 0 ]] && echo -ne "\e[1m\e[3${1}m" || true
     shift
     echo "$@"
-    [[ -t 0 ]] && echo -ne "\e[0m"
+    [[ -t 0 ]] && echo -ne "\e[0m" || true
 }
 
 log() {
